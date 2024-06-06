@@ -1,4 +1,40 @@
 ```{r}
-#I am just adding this and was wondering if i can push this up to github
+
+library(tidyverse)
+hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
+
+View(hospitals)
+str(hospitals)
+
+```
+
+
+```{r}
+hospitals_type <- hospitals |> 
+  filter(!is.na(Rating.Mortality), !is.na(Facility.Type))
+         
+```
+
+
+```{r}
+mortality_summary <- hospitals_type |> 
+  group_by(Facility.Type, Rating.Mortality) |> 
+  summarize(count = n(), 
+            .groups = 'drop'
+            )
+```
+
+
+```{r}
+mortality_summary |> 
+  ggplot(aes(x = Facility.Type, y = count, fill = Rating.Mortality)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Hospital Type vs Mortality Rate", 
+    x = "Hospital Type", 
+    y = "Count", 
+    fill = "Mortality Rating"
+    )
+
 ```
 
