@@ -43,10 +43,5 @@ hospitals_named |>
   )
 
 ```
-attempt
-```{r}
-hospitals |>
-  ggplot(aes(x = "Procedure.Heart Failure.Cost")) +
-  geom_boxplot(fill = "red", color = "white")
-```
+
 
