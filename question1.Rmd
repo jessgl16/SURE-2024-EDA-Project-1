@@ -5,7 +5,7 @@ Question one, does hospital impact the mortality rate?
 library(tidyverse)
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
-View(hospitals)
+#View(hospitals)
 str(hospitals)
 
 ```
@@ -28,7 +28,7 @@ mortality_proportion <- hospitals_type |>
   group_by(Facility.Type, Rating.Mortality) |> 
   summarize(count = n(), .groups = 'drop') |> 
   group_by(Facility.Type) |> 
-  mutate(proportion = count / sum(count))
+  mutate(proportion = round(count / sum(count), 2))
 
 #Stacked bar graph
 mortality_proportion |> 
