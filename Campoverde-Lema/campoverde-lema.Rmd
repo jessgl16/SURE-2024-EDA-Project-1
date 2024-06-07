@@ -1,3 +1,5 @@
+Question one, does hospital impact the mortality rate? 
+
 ```{r}
 
 library(tidyverse)
