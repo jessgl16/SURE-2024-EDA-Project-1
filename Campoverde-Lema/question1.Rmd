@@ -23,12 +23,14 @@ hospitals_type <- hospitals |>
 
 
 ```{r}
+# Calculate proportions
 mortality_proportion <- hospitals_type |> 
   group_by(Facility.Type, Rating.Mortality) |> 
   summarize(count = n(), .groups = 'drop') |> 
   group_by(Facility.Type) |> 
   mutate(proportion = count / sum(count))
 
+#Stacked bar graph
 mortality_proportion |> 
   ggplot(aes(x = Facility.Type, y = proportion, fill = Rating.Mortality)) +
   geom_bar(stat = "identity") +
