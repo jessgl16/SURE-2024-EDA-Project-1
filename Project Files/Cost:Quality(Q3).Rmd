@@ -1,0 +1,15 @@
+
+```{r}
+library(tidyverse)
+hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
+```
+
+```{r}
+#View(hospitals)
+hospitals |> 
+  rename(heart.failure.cost = 'Procedure.Heart Failure.Cost',
+         heart.failure.quality = 'Procedure.Heart Failure.Quality') |> 
+  ggplot(aes(x = heart.failure.cost, y = heart.failure.quality)) +
+  geom_point()
+```
+
