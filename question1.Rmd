@@ -38,16 +38,25 @@ mortality_proportion <- mortality_proportion |>
 #Stacked bar graph
 mortality_proportion |> 
   ggplot(aes(x = Facility.Type, y = proportion, fill = Rating.Mortality)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = label), 
-            position = position_stack(vjust = 0.5), 
-            size = 3) + # Add percentage labels
-  scale_y_continuous(labels = percent_format(accuracy = 1)) + # Display y-axis labels
+  geom_bar(stat = "identity", color = "black") +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5), 
+            size = 3, 
+            color = "white") + # Add percentage labels
+  scale_fill_viridis_d(option = "D", begin = 0, end = 0.75, direction = 1) + 
+  scale_y_continuous(labels = NULL) + # Remove y-axis labels
   labs(title = "Proportion of Mortality Ratings by Hospital Type", 
+       subtitle = "Data from CORGIS Dataset Project",
        x = "Hospital Type", 
        y = "Proportion", 
        fill = "Mortality Rating") +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(size = 10),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+
+  )
 ```
 
 
