@@ -12,4 +12,11 @@ hospitals |>
   ggplot(aes(x = heart.failure.cost, y = heart.failure.quality)) +
   geom_point()
 ```
+```{r}
+hospitals |> 
+  ggplot(aes(x = Rating.Readmission, y = Facility.Type)) +
+  geom_col() +
+  coord_flip()
+  
+```
 
