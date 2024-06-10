@@ -1,0 +1,53 @@
+---
+title: "K-means clustering"
+author: "Dennis Campoverde-Lema"
+date: "2024-06-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+
+hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
+
+```
+
+
+```{r}
+hospitals_clean <- hospitals |> 
+  rename(
+    Procedure.Heart.Failure.Cost = 'Procedure.Heart Failure.Cost',
+    Procedure.Heart.Attack.Cost = 'Procedure.Heart Attack.Cost',
+    Procedure.Hip.Knee.Cost = 'Procedure.Hip Knee.Cost'
+    
+    
+  ) |> 
+  filter(Rating.Mortality != "Unknown", Facility.Type != "Unknown") |> 
+  mutate(Rating.Mortality = factor(Rating.Mortality, levels = c("Below", "Same", "Above")),
+         Facility.Type = factor(Facility.Type))
+```
+
+
+```{r}
+hospitals_numeric <- hospitals_clean |> 
+  select(Rating.Overall, Procedure.Heart.Attack.Cost, Procedure.Heart.Failure.Cost, Procedure.Pneumonia.Cost, Procedure.Hip.Knee.Cost) |> 
+  drop_na()
+
+set.seed(123)
+kmeans_result <- kmeans(scale(hospitals_numeric), centers = 3)
+
+hospitals_clean <- hospitals_clean |> 
+  drop_na(Rating.Overall, Procedure.Heart.Attack.Cost, Procedure.Heart.Failure.Cost, Procedure.Pneumonia.Cost, Procedure.Hip.Knee.Cost) |> 
+  mutate(cluster = factor(kmeans_result$cluster))
+
+# Visualization 4: Clustering result
+ggplot(hospitals_clean, aes(x = Procedure.Heart.Attack.Cost, y = Procedure.Heart.Failure.Cost, color = cluster)) +
+  geom_point() +
+  labs(title = "Clustering of Hospitals Based on Costs", x = "Heart Attack Cost", y = "Heart Failure Cost", color = "Cluster")
+```
+

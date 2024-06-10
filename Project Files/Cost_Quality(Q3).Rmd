@@ -4,19 +4,24 @@ library(tidyverse)
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 ```
 
+
 ```{r}
 #View(hospitals)
 hospitals |> 
   rename(heart.failure.cost = 'Procedure.Heart Failure.Cost',
          heart.failure.quality = 'Procedure.Heart Failure.Quality') |> 
-  ggplot(aes(x = heart.failure.cost, y = heart.failure.quality)) +
-  geom_point()
+   filter(heart.failure.quality != "Unknown") |> 
+  ggplot(aes(y = heart.failure.cost, x = heart.failure.quality)) +
+  geom_boxplot()
 ```
+
+
+
 ```{r}
 hospitals |> 
-  ggplot(aes(x = Rating.Readmission, y = Facility.Type)) +
-  geom_col() +
-  coord_flip()
-  
+  filter(Facility.Type != "Unknown", Rating.Readmission != "None" ) |> 
+  ggplot(aes(y = Rating.Readmission, x = Facility.Type)) +
+  geom_col()
+
 ```
 
