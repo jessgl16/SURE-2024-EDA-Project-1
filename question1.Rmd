@@ -41,14 +41,16 @@ mortality_proportion |>
   geom_bar(stat = "identity", color = "black") +
   geom_text(aes(label = label), position = position_stack(vjust = 0.5), 
             size = 3, 
-            color = "white") + # Add percentage labels
+            color = "white",
+            fontface = "bold") + # Add percentage labels
   scale_fill_viridis_d(option = "D", begin = 0, end = 0.75, direction = 1) + 
   scale_y_continuous(labels = NULL) + # Remove y-axis labels
   labs(title = "Proportion of Mortality Ratings by Hospital Type", 
        subtitle = "Data from CORGIS Dataset Project",
        x = "Hospital Type", 
        y = "Proportion", 
-       fill = "Mortality Rating") +
+       fill = "Mortality Rating*",
+       captions = "All ratings is compared to the national average") +
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(face = "bold"),
