@@ -1,0 +1,79 @@
+---
+title: "K-means clustering"
+author: "Dennis Campoverde-Lema"
+date: "2024-06-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+library(cluster)
+library(factoextra)
+
+
+
+# Load the dataset
+hospital_data <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
+
+# Inspect the structure of the dataset
+glimpse(hospital_data)
+
+```
+
+
+```{r}
+continuous_features <- hospital_data |> 
+  select('Procedure.Heart Attack.Cost', 'Procedure.Heart Failure.Cost', Procedure.Pneumonia.Cost, 'Procedure.Hip Knee.Cost')
+
+continuous_features[continuous_features == 0] <- NA
+
+continuous_features <- continuous_features %>%
+  drop_na()
+
+glimpse(continuous_features)
+
+
+
+```
+
+
+```{r}
+# Normalize the data
+normalized_data <- scale(continuous_features)
+
+# Determine the optimal number of clusters using the elbow method
+fviz_nbclust(normalized_data, kmeans, method = "wss")
+
+# Apply K-Means with the chosen number of clusters
+set.seed(123)
+kmeans_result <- kmeans(normalized_data, centers = 4, nstart = 25)
+
+# Evaluate the clustering results
+silhouette_score <- silhouette(kmeans_result$cluster, dist(normalized_data))
+mean(silhouette_score[, 3])
+
+
+
+```
+
+
+```{r}
+fviz_cluster(kmeans_result, data = normalized_data)
+
+hospital_data <- hospital_data |> 
+  mutate(Cluster = kmeans_result$cluster)
+
+cluster_summary <- hospital_data |> 
+  group_by(Cluster) |> 
+  summarise(across(starts_with("Procedure"), mean, na.rm = TRUE))
+
+print(cluster_summary)
+
+```
+

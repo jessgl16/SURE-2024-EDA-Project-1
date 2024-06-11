@@ -1,22 +1,61 @@
 
 ```{r}
 library(tidyverse)
+library(scales)
+library(RColorBrewer)
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 ```
+dont touch this!!!!!!!!!!!!!
+```{r}
+replace_outliers_with_mean <- function(data, cost_col, quality_col) {
+  data |> 
+    group_by(!!sym(quality_col)) |> 
+    mutate(!!sym(cost_col) := ifelse(
+      !!sym(cost_col) < quantile(!!sym(cost_col), 0.25) - 1.5 * IQR(!!sym(cost_col)) |
+      !!sym(cost_col) > quantile(!!sym(cost_col), 0.75) + 1.5 * IQR(!!sym(cost_col)),
+      mean(!!sym(cost_col), na.rm = TRUE),
+      !!sym(cost_col)
+    )) |> 
+    ungroup()
+}
 
-```{r}
-#View(hospitals)
-hospitals |> 
-  rename(heart.failure.cost = 'Procedure.Heart Failure.Cost',
-         heart.failure.quality = 'Procedure.Heart Failure.Quality') |> 
-  ggplot(aes(x = heart.failure.cost, y = heart.failure.quality)) +
-  geom_point()
+
 ```
+
+
+
+filtering out and renaming some columns also taking out the outliers
+```{r}
+hospitals <- hospitals |> 
+  rename(heart_failure_cost = 'Procedure.Heart Failure.Cost',
+         heart_failure_quality = 'Procedure.Heart Failure.Quality') |> 
+  filter(heart_failure_quality != "Unknown") |> 
+  replace_outliers_with_mean("heart_failure_cost", "heart_failure_quality")
+```
+
+
+graph
 ```{r}
 hospitals |> 
-  ggplot(aes(x = Rating.Readmission, y = Facility.Type)) +
-  geom_col() +
-  coord_flip()
-  
+  ggplot(aes(y = heart_failure_cost, x = fct_reorder(heart_failure_quality, heart_failure_cost, .fun = median), fill = heart_failure_quality)) +
+  geom_boxplot(outlier.shape = NA, color = "darkgray") +
+  scale_fill_viridis_d(option = "D", begin = 0, end = 0.75, direction = 1) + 
+  stat_summary(fun = mean, geom = "text", aes(label = round(..y.., 1)), color = "white", vjust = -0.5) +
+  labs(
+    title = "Heart Failure Cost by Quality",
+    x = "Heart Failure Quality",
+    y = "Heart Failure Cost",
+    subtitle = "Data from CORGIS Dataset Project",
+    caption = "*All ratings are compared to the national average"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 10, hjust = 0.5),
+    plot.caption = element_text(size = 8, face = "italic"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
 ```
 

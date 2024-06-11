@@ -55,6 +55,7 @@ mortality_proportion |>
   theme(
     plot.title = element_text(face = "bold"),
     plot.subtitle = element_text(size = 10),
+    plot.caption = element_text(size = 8, face = "italic"),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)
 
