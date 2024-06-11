@@ -2,7 +2,13 @@ Question 2: Does average cost of a heart failure procedure affect mortality rate
 Load all the files and view the hospital dataset
 <!-- REFERENCE  -->
 ```{r}
+# install.packages("maps")
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(maps)
+
+
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
 hospitals
@@ -11,12 +17,19 @@ View(hospitals)
 ```
 Look at the different column names in the hospitals dataset.
 ```{r}
+
 names(hospitals)
 ```
 Change columns names to improve naming styles
 ```{r}
 hospitals_named <- hospitals |>
-  rename(heart.failure.cost = "Procedure.Heart Failure.Cost") |>
+  rename(heart.failure.cost = "Procedure.Heart Failure.Cost",
+         heart.attack.cost = "Procedure.Heart Attack.Cost",
+         hip.knee.cost  = "Procedure.Hip Knee.Cost",
+         pneumonia.cost = "Procedure.Pneumonia.Cost",
+         
+         ) |>
+  
   mutate(Rating.Mortality = factor(Rating.Mortality, levels = c("Below", "Same", "Above")))
 
 View(hospitals_named)
@@ -27,7 +40,7 @@ Code to create 3 side by side box plots of heart failure procedure costs based o
 ```{r}
 hospitals_named |>
   filter(Rating.Mortality %in% c("Above", "Same", "Below")) |>
-  ggplot(aes(x = heart.failure.cost, y = Rating.Mortality)) +
+  ggplot(aes(x = heart.failure.cost, y = Facility.Type)) +
   geom_boxplot(fill = "lightblue", color = "black") + 
   labs(
     x = "Cost of Heart Failure Procedure",
@@ -43,5 +56,113 @@ hospitals_named |>
   )
 
 ```
+```{r}
+hospitals_named |>
+  filter(Rating.Overall != -1, Facility.Type != "Unknown") |>
+  ggplot(aes(x = Facility.Type, y = Rating.Overall, fill = Facility.Type)) +
+  geom_violin() +
+  geom_boxplot(color = "black", width = 0.05) + 
+  labs(
+    x = "Cost of Heart Failure Procedure",
+    y = "Mortality Rating Compared to National Average",
+    title = "Heart Failure Procedure Costs Related to Mortality Rate", 
+    caption = "Data from CORGIS Dataset Project"
+  ) + 
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    strip.background = element_blank(),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+```
+taylor_all_songs |> 
+  ggplot(aes(x = loudness, y = energy)) +
+  geom_point(color = "darkred", size = 4)
+  
+```{r}
+hospitals_named |>
+  filter(heart.failure.cost > 0,
+         hip.knee.procedure.cost > 0) |>
+  ggplot(aes(x = heart.failure.cost, 
+             y = hip.knee.procedure.cost, 
+             fill = "Facility.Type")) +
+  geom_point() 
+  # labs(
+  #   x = "Cost of Heart Failure Procedure",
+  #   y = "Mortality Rating Compared to National Average",
+  #   title = "Heart Failure Procedure Costs Related to Mortality Rate", 
+  #   caption = "Data from CORGIS Dataset Project"
+  # )
 
+```
+  
+  TRIAL 4
+  Will look at cost of each procedire, compared to the quality.
+  A bar chart, so that it will be organized by the facility type, and then color coded by the quality at each facility
+
+
+```{r}
+# groupedStates <- hospitals_named |>
+#   filter(Rating.Overall > 0) |>
+#   group_by(Facility.Type, Rating.Overall) |>
+#   summarize(count = n(),
+#             .groups = 'drop')
+# 
+# costQualitySummary |>
+#   ggplot(aes(x = Facility.Type, y = count(), fill = Rating.Overall)) +
+#   geom_bar(stat = "identity", position = "dodge") +
+
+
+groupedStates <- hospitals_named |>
+  group_by(Facility.State) |>
+  mutate(stateName = twimws(Facility.State))
+  summarise(count = n())
+
+View(groupedStates)
+
+
+
+
+```
+clean the data so that the state names and full, not abbreviations
+
+```{r}
+# install.packages("datasets")
+library(datasets)
+groupedStates$State.Name <- state.name[match(groupedStates$Facility.State, state.abb)]
+
+groupedStates$lat <-
+```
+
+
+create choropleth map
+
+```{r}
+# groupedStates |>
+#   ggplot(aes(map_id = Facility.State, fill = count)) +
+#   geom_map(map = groupedStates, aes(x = long, y = lat, group = group), color = "white") +
+#   expand_limits(x = Facility.State, y = count) +
+#   scale_fill_continuous(low = "white", high = "red", na.values = "grey50", name = "Number of Hospitals") +
+#   theme_void()
+
+us <- map_data("state")
+
+# groupedStates |>
+#   ggplot(aes(map_id = State.Name,
+#              fill = count)) +
+#   geom_map(map=states_map, aes(x = long, y = lat, group = group), color = "white") +
+#   scale_fill_continuous(low = "white", high = "red", na.value = "grey50", name = "Number of Hospitals") 
+
+
+# groupedStates |>
+#   ggplot(aes(map_id = State.Name,
+#              fill = count)) +
+#   geom_map(data = us, map = us, aes(long, lat, map_id = region)) +
+#   scale_fill_continuous(low = "white", high = "red", na.value = "grey50", name = "Number of Hospitals") 
+
+
+ggplot(groupedStates, aes(x = long, y = lat, group = group, fill = ))
+
+
+```
 
