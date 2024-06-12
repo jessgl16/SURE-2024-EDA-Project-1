@@ -71,28 +71,24 @@ ggplot(hospital_data, aes(x = 'Procedure.Heart.Attack Cost', y = 'Procedure.Hear
   scale_color_manual(values = rainbow(length(unique(clusters))))
 ```
 
-
+#Performing K means
 ```{r}
-# Set a seed for reproducibility
 set.seed(123)
 
-# Perform k-means clustering
-kmeans_result <- kmeans(data_to_cluster, centers = 5, nstart = 25)  # Adjust centers based on your analysis
+kmeans_result <- kmeans(data_to_cluster, centers = 5, nstart = 25)  
 
-# Add cluster assignments to the data
 hospital_data$Cluster <- factor(kmeans_result$cluster)
 ```
 
-
+visualize clusters
 ```{r}
-# Use fviz_cluster to visualize clusters
 fviz_cluster(kmeans_result, data = data_to_cluster)
 
 ```
 
-
-```{r}
 # Silhouette analysis
+```{r}
+
 silhouette_scores <- silhouette(kmeans_result$cluster, dist(data_to_cluster))
 fviz_silhouette(silhouette_scores)
 
