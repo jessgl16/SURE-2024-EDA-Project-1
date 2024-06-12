@@ -1,99 +1,6 @@
-Question 2: Does average cost of a heart failure procedure affect mortality rate?
-Load all the files and view the hospital dataset
-<!-- REFERENCE  -->
-```{r}
-# install.packages("maps")
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(maps)
+# Question 2: 
 
-
-hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
-
-hospitals
-View(hospitals)
-
-```
-Look at the different column names in the hospitals dataset.
-```{r}
-
-names(hospitals)
-```
-Change columns names to improve naming styles
-```{r}
-hospitals_named <- hospitals |>
-  rename(heart.failure.cost = "Procedure.Heart Failure.Cost",
-         heart.attack.cost = "Procedure.Heart Attack.Cost",
-         hip.knee.cost  = "Procedure.Hip Knee.Cost",
-         pneumonia.cost = "Procedure.Pneumonia.Cost",
-         
-         ) |>
-  
-  mutate(Rating.Mortality = factor(Rating.Mortality, levels = c("Below", "Same", "Above")))
-
-View(hospitals_named)
-```
-
-Code to create 3 side by side box plots of heart failure procedure costs based on the hospital's mortality rate based on the national average mortality rate (which is same). 
-
-```{r}
-hospitals_named |>
-  filter(Rating.Mortality %in% c("Above", "Same", "Below")) |>
-  ggplot(aes(x = heart.failure.cost, y = Facility.Type)) +
-  geom_boxplot(fill = "lightblue", color = "black") + 
-  labs(
-    x = "Cost of Heart Failure Procedure",
-    y = "Mortality Rating Compared to National Average",
-    title = "Heart Failure Procedure Costs Related to Mortality Rate", 
-    caption = "Data from CORGIS Dataset Project"
-  ) + 
-  theme_bw() +
-  theme(
-    legend.position = "bottom",
-    strip.background = element_blank(),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-```
-```{r}
-hospitals_named |>
-  filter(Rating.Overall != -1, Facility.Type != "Unknown") |>
-  ggplot(aes(x = Facility.Type, y = Rating.Overall, fill = Facility.Type)) +
-  geom_violin() +
-  geom_boxplot(color = "black", width = 0.05) + 
-  labs(
-    x = "Cost of Heart Failure Procedure",
-    y = "Mortality Rating Compared to National Average",
-    title = "Heart Failure Procedure Costs Related to Mortality Rate", 
-    caption = "Data from CORGIS Dataset Project"
-  ) + 
-  theme_bw() +
-  theme(
-    legend.position = "bottom",
-    strip.background = element_blank(),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-```
-
-  
-```{r}
-hospitals_named |>
-  filter(heart.failure.cost > 0,
-         hip.knee.procedure.cost > 0) |>
-  ggplot(aes(x = heart.failure.cost, 
-             y = hip.knee.procedure.cost, 
-             fill = "Facility.Type")) +
-  geom_point() 
-  # labs(
-  #   x = "Cost of Heart Failure Procedure",
-  #   y = "Mortality Rating Compared to National Average",
-  #   title = "Heart Failure Procedure Costs Related to Mortality Rate", 
-  #   caption = "Data from CORGIS Dataset Project"
-  # )
-
-```
-  
+Question: How many hospitals are located in each state?
 #MAKE A CHOROPLETH MAP !!
 - get the packages
 - create a state name look up table (a tibble??????????)
@@ -105,11 +12,9 @@ hospitals_named |>
 - merge hospital counts, and plot
 plot: x = long, y = lat, group = group, fill = n
 
+Load data and libraries to use and preprocessing
+
 ```{r}
-
-# install.packages("viridis")
-# install.packages("statebins")
-
 
 library(viridis)
 library(statebins)
@@ -117,7 +22,6 @@ library(datasets)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
-library(ggplot2)
 library(maps)
 
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
@@ -143,16 +47,24 @@ mergedData |>
   geom_polygon(color = "black") +
   coord_map("polyconic") +
   # scale_fill_gradient(low = "midnightblue", high = "lightpink")
-  scale_fill_viridis_c()
-
-```
-
-Attempting to make a similar map but with number of hospitals in counties instead
-- first add counties
-- then group by counties
-- then similar process
-```{r}
-# install.packages("tidygeocoder")
+  scale_fill_viridis_c() +
+  labs(
+    x = "",
+    y = "",
+    title = "Hospital Counts by State",
+    subtitle = "Data from CORGIS Dataset Project"
+  ) +
+  scale_y_continuous(labels = NULL) +
+  scale_x_continuous(labels = NULL) +
+  theme_light() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    strip.background = element_blank(),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 10),
+    axis.text = element_text(size = 12),
+  )
 
 ```
 
