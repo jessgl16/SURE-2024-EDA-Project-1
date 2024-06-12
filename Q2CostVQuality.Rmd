@@ -75,9 +75,7 @@ hospitals_named |>
     plot.title = element_text(hjust = 0.5, face = "bold")
   )
 ```
-taylor_all_songs |> 
-  ggplot(aes(x = loudness, y = energy)) +
-  geom_point(color = "darkred", size = 4)
+
   
 ```{r}
 hospitals_named |>
@@ -96,73 +94,65 @@ hospitals_named |>
 
 ```
   
-  TRIAL 4
-  Will look at cost of each procedire, compared to the quality.
-  A bar chart, so that it will be organized by the facility type, and then color coded by the quality at each facility
-
+#MAKE A CHOROPLETH MAP !!
+- get the packages
+- create a state name look up table (a tibble??????????)
+- agg hospitals by states
+- mutate with facility state
+- count and left join
+- get the map data (states <- map_data("states"))
+- merge another left join with region and state name
+- merge hospital counts, and plot
+plot: x = long, y = lat, group = group, fill = n
 
 ```{r}
-# groupedStates <- hospitals_named |>
-#   filter(Rating.Overall > 0) |>
-#   group_by(Facility.Type, Rating.Overall) |>
-#   summarize(count = n(),
-#             .groups = 'drop')
-# 
-# costQualitySummary |>
-#   ggplot(aes(x = Facility.Type, y = count(), fill = Rating.Overall)) +
-#   geom_bar(stat = "identity", position = "dodge") +
+
+# install.packages("viridis")
+# install.packages("statebins")
 
 
-groupedStates <- hospitals_named |>
+library(viridis)
+library(statebins)
+library(datasets)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(maps)
+
+hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
+us_states <- map_data("state")
+
+groupedStates <- hospitals |>
   group_by(Facility.State) |>
-  mutate(stateName = twimws(Facility.State))
   summarise(count = n())
 
-View(groupedStates)
+groupedStates$region <- tolower(state.name[match(groupedStates$Facility.State, state.abb)])
 
-
-
+# View(groupedStates)
+mergedData <- left_join(groupedStates, us_states, by = c("region"))
+# View(mergedData)
 
 ```
-clean the data so that the state names and full, not abbreviations
-
-```{r}
-# install.packages("datasets")
-library(datasets)
-groupedStates$State.Name <- state.name[match(groupedStates$Facility.State, state.abb)]
-
-groupedStates$lat <-
-```
-
 
 create choropleth map
 
 ```{r}
-# groupedStates |>
-#   ggplot(aes(map_id = Facility.State, fill = count)) +
-#   geom_map(map = groupedStates, aes(x = long, y = lat, group = group), color = "white") +
-#   expand_limits(x = Facility.State, y = count) +
-#   scale_fill_continuous(low = "white", high = "red", na.values = "grey50", name = "Number of Hospitals") +
-#   theme_void()
+mergedData |>
+  ggplot(aes(x = long, y = lat, group = group, fill = count)) +
+  geom_polygon(color = "black") +
+  coord_map("polyconic") +
+  # scale_fill_gradient(low = "midnightblue", high = "lightpink")
+  scale_fill_viridis_c()
 
-us <- map_data("state")
+```
 
-# groupedStates |>
-#   ggplot(aes(map_id = State.Name,
-#              fill = count)) +
-#   geom_map(map=states_map, aes(x = long, y = lat, group = group), color = "white") +
-#   scale_fill_continuous(low = "white", high = "red", na.value = "grey50", name = "Number of Hospitals") 
-
-
-# groupedStates |>
-#   ggplot(aes(map_id = State.Name,
-#              fill = count)) +
-#   geom_map(data = us, map = us, aes(long, lat, map_id = region)) +
-#   scale_fill_continuous(low = "white", high = "red", na.value = "grey50", name = "Number of Hospitals") 
-
-
-ggplot(groupedStates, aes(x = long, y = lat, group = group, fill = ))
-
+Attempting to make a similar map but with number of hospitals in counties instead
+- first add counties
+- then group by counties
+- then similar process
+```{r}
+# install.packages("tidygeocoder")
 
 ```
 
