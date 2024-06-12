@@ -28,52 +28,73 @@ glimpse(hospital_data)
 
 
 ```{r}
-continuous_features <- hospital_data |> 
-  select('Procedure.Heart Attack.Cost', 'Procedure.Heart Failure.Cost', Procedure.Pneumonia.Cost, 'Procedure.Hip Knee.Cost')
-
-continuous_features[continuous_features == 0] <- NA
-
-continuous_features <- continuous_features |> 
+hospital_data <- hospital_data |> 
+  mutate(across(where(is.numeric), ~na_if(.x, 0))) |> 
   drop_na()
 
-glimpse(continuous_features)
+data_to_cluster <- hospital_data |> 
+  select('Procedure.Heart Attack.Cost', 'Procedure.Heart Failure.Cost', Procedure.Pneumonia.Cost, 'Procedure.Hip Knee.Cost')
 
+```
+
+
+```{r}
+
+scaled_data <- scale(data_to_cluster)
+
+dissimilarity_matrix <- dist(scaled_data)
+
+hc_complete <- hclust(dissimilarity_matrix, method = "complete")
 
 
 ```
 
 
 ```{r}
-# Normalize the data
-normalized_data <- scale(continuous_features)
+plot(hc_complete, main = "Dendrogram for Complete Linkage")
 
-# Determine the optimal number of clusters using the elbow method
-fviz_nbclust(normalized_data, kmeans, method = "wss")
+# Cut the tree at a height to obtain a sensible number of clusters
+clusters <- cutree(hc_complete, k = 5) # You can adjust 'k' based on the dendrogram
 
-# Apply K-Means with the chosen number of clusters
+# Add cluster assignment to the original data
+hospital_data$Cluster <- as.factor(clusters)
+
+
+```
+
+
+```{r}
+ggplot(hospital_data, aes(x = 'Procedure.Heart.Attack Cost', y = 'Procedure.Heart.Failure Cost', color = Cluster)) +
+  geom_point(alpha = 0.6, size = 4) +
+  theme_minimal() +
+  ggtitle("Cluster Visualization for Hospital Data") +
+  scale_color_manual(values = rainbow(length(unique(clusters))))
+```
+
+
+```{r}
+# Set a seed for reproducibility
 set.seed(123)
-kmeans_result <- kmeans(normalized_data, centers = 5, nstart = 25)
 
-# Evaluate the clustering results
-silhouette_score <- silhouette(kmeans_result$cluster, dist(normalized_data))
-mean(silhouette_score[, 3])
+# Perform k-means clustering
+kmeans_result <- kmeans(data_to_cluster, centers = 5, nstart = 25)  # Adjust centers based on your analysis
+
+# Add cluster assignments to the data
+hospital_data$Cluster <- factor(kmeans_result$cluster)
+```
 
 
+```{r}
+# Use fviz_cluster to visualize clusters
+fviz_cluster(kmeans_result, data = data_to_cluster)
 
 ```
 
 
 ```{r}
-fviz_cluster(kmeans_result, data = normalized_data)
-
-hospital_data <- hospital_data |> 
-  mutate(Cluster = kmeans_result$cluster)
-
-cluster_summary <- hospital_data |> 
-  group_by(Cluster) |> 
-  summarise(across(starts_with("Procedure"), mean, na.rm = TRUE))
-
-print(cluster_summary)
+# Silhouette analysis
+silhouette_scores <- silhouette(kmeans_result$cluster, dist(data_to_cluster))
+fviz_silhouette(silhouette_scores)
 
 ```
 

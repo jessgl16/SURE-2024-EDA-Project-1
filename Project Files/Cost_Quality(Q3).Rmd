@@ -40,7 +40,7 @@ hospitals |>
   ggplot(aes(y = heart_failure_cost, x = fct_reorder(heart_failure_quality, heart_failure_cost, .fun = median), fill = heart_failure_quality)) +
   geom_violin(alpha = 0.7) + # Adjusting alpha for better contrast
   geom_boxplot(outlier.shape = NA, color = "black", width = .5) + # Narrowing boxplot width for better distinction
-  scale_fill_viridis_d(option = "G", begin = 0, end = 1, direction = 1) + 
+  scale_fill_manual(values = c("lightblue", "lightgreen", "cornsilk")) + 
   stat_summary(fun = median, geom = "text", aes(label = round(..y.., 1)), color = "black", vjust = -0.5) +
   labs(
     title = "Heart Failure Cost by Quality",
@@ -58,5 +58,7 @@ hospitals |>
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)
   )
+
+  
 ```
 
