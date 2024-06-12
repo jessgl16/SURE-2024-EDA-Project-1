@@ -9,19 +9,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
+# Load necessary libraries and Data
 ```{r}
-# Load necessary libraries
+
 library(tidyverse)
 library(cluster)
 library(factoextra)
 
 
 
-# Load the dataset
 hospital_data <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
-# Inspect the structure of the dataset
 glimpse(hospital_data)
 
 ```
@@ -49,14 +47,12 @@ hc_complete <- hclust(dissimilarity_matrix, method = "complete")
 
 ```
 
-
+hierachy clusters
 ```{r}
 plot(hc_complete, main = "Dendrogram for Complete Linkage")
 
-# Cut the tree at a height to obtain a sensible number of clusters
 clusters <- cutree(hc_complete, k = 5) # You can adjust 'k' based on the dendrogram
 
-# Add cluster assignment to the original data
 hospital_data$Cluster <- as.factor(clusters)
 
 

@@ -45,7 +45,7 @@ hospitals |>
   labs(
     title = "Heart Failure Cost by Quality",
     x = "Heart Failure Quality",
-    y = "Heart Failure Cost",
+    y = "Heart Failure Cost ($)",
     subtitle = "Data from CORGIS Dataset Project",
     caption = "*All ratings are compared to the national average"
   ) +
@@ -60,5 +60,45 @@ hospitals |>
   )
 
   
+```
+worse_quality <- hospitals |> filter(heart_failure_quality == "Worse") |> pull(heart_failure_cost)
+average_quality <- hospitals |> filter(heart_failure_quality == "Average") |> pull(heart_failure_cost)
+better_quality <- hospitals |> filter(heart_failure_quality == "Better") |> pull(heart_failure_cost)
+
+# Perform pairwise t-tests
+t_test_worse_vs_average <- t.test(worse_quality, average_quality, alternative = "two.sided")
+t_test_worse_vs_better <- t.test(worse_quality, better_quality, alternative = "two.sided")
+t_test_average_vs_better <- t.test(average_quality, better_quality, alternative = "two.sided")
+
+# Display the t-test results
+list(
+  Worse_vs_Average = t_test_worse_vs_average,
+  Worse_vs_Better = t_test_worse_vs_better,
+  Average_vs_Better = t_test_average_vs_better
+)
+```{r}
+worse_quality <- hospitals |> 
+  filter(heart_failure_quality == "Worse") |> 
+  pull(heart_failure_cost)
+
+average_quality <- hospitals |> 
+  filter(heart_failure_quality == "Average") |> 
+  pull(heart_failure_cost)
+
+better_quality <- hospitals |> 
+  filter(heart_failure_quality == "Better") |> 
+  pull(heart_failure_cost)
+
+t_test_worse_vs_average <- t.test(worse_quality, average_quality, alternative = "two.sided")
+
+t_test_worse_vs_better <- t.test(worse_quality, better_quality, alternative = "two.sided")
+
+t_test_average_vs_better <- t.test(average_quality, better_quality, alternative = "two.sided")
+
+list(
+  Worse_vs_Average = t_test_worse_vs_average,
+  Worse_vs_Better = t_test_worse_vs_better,
+  Average_vs_Better = t_test_average_vs_better
+)
 ```
 
