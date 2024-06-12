@@ -24,6 +24,8 @@ library(tidyverse)
 library(dplyr)
 library(maps)
 
+
+
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 us_states <- map_data("state")
 
@@ -38,6 +40,16 @@ mergedData <- left_join(groupedStates, us_states, by = c("region"))
 # View(mergedData)
 
 ```
+change fonts
+```{r}
+library(extrafont)
+font_import()
+# loadfonts(device = "win")
+# fonts()
+
+```
+
+
 
 create choropleth map
 
@@ -58,6 +70,7 @@ mergedData |>
   scale_x_continuous(labels = NULL) +
   theme_light() +
   theme(
+    text = element_text(family = "serif"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
