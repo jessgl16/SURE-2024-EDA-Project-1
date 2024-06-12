@@ -52,7 +52,7 @@ fviz_nbclust(normalized_data, kmeans, method = "wss")
 
 # Apply K-Means with the chosen number of clusters
 set.seed(123)
-kmeans_result <- kmeans(normalized_data, centers = 3, nstart = 25)
+kmeans_result <- kmeans(normalized_data, centers = 5, nstart = 25)
 
 # Evaluate the clustering results
 silhouette_score <- silhouette(kmeans_result$cluster, dist(normalized_data))
