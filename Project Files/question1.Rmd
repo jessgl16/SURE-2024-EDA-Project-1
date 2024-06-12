@@ -5,10 +5,12 @@ Question one, does hospital impact the mortality rate?
 library(tidyverse)
 library(scales)
 
+
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
 #View(hospitals)
 str(hospitals)
+
 
 ```
 
@@ -39,7 +41,8 @@ mortality_proportion <- mortality_proportion |>
 mortality_proportion |> 
   ggplot(aes(x = Facility.Type, y = proportion, fill = Rating.Mortality)) +
   geom_bar(stat = "identity", color = "black") +
-  geom_text(aes(label = label), position = position_stack(vjust = 0.5), 
+  geom_text(aes(label = label), 
+            position = position_stack(vjust = 0.5), 
             size = 3, 
             color = "white",
             fontface = "bold") + # Add percentage labels
@@ -50,15 +53,15 @@ mortality_proportion |>
        x = "Hospital Type", 
        y = "Proportion", 
        fill = "Mortality Rating*",
-       captions = "*All ratings are compared to the national average") +
+       caption = "*All ratings are compared to the national average") +
   theme_minimal(base_size = 14) +
   theme(
+    text = element_text(family = "serif"),
     plot.title = element_text(face = "bold"),
     plot.subtitle = element_text(size = 10),
     plot.caption = element_text(size = 8, face = "italic"),
     axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
-
+    axis.title = element_text(size = 14),
   )
 ```
 
