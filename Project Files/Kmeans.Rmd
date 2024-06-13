@@ -18,7 +18,7 @@ library(janitor)
 # Load the data
 hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
-hospitals <- hospitals %>% clean_names()
+hospitals <- hospitals |>  clean_names()
 
 
 ```
@@ -26,19 +26,19 @@ hospitals <- hospitals %>% clean_names()
 
 ```{r}
 # Select relevant columns and remove rows with missing values
-cost_data <- hospitals %>%
-  select(facility_name, procedure_heart_attack_cost, procedure_heart_failure_cost, procedure_pneumonia_cost, procedure_hip_knee_cost) %>%
+cost_data <- hospitals |> 
+  select(facility_name, procedure_heart_attack_cost, procedure_heart_failure_cost, procedure_pneumonia_cost, procedure_hip_knee_cost) |> 
   drop_na()
 
-cost_data <- cost_data %>%
+cost_data <- cost_data |> 
   filter(procedure_heart_attack_cost != 0,
          procedure_heart_failure_cost != 0,
          procedure_pneumonia_cost != 0,
          procedure_hip_knee_cost != 0)
 
 # Standardize the data
-cost_data_scaled <- cost_data %>%
-  select(-facility_name) %>%
+cost_data_scaled <- cost_data |> 
+  select(-facility_name) |> 
   scale()
 
 # Apply K-Means Clustering
@@ -54,7 +54,7 @@ cost_data$Cluster <- kmeans_result$cluster
 
 ```{r}
 # Updated Visualization with Custom Colors and Theme
-cost_data %>%
+cost_data |> 
   ggplot(aes(x = procedure_heart_attack_cost, y = procedure_heart_failure_cost, color = as.factor(Cluster))) +
   geom_point() +
   labs(title = "K-Means Clustering on Procedure Costs", 
