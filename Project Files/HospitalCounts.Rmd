@@ -2,15 +2,6 @@
 
 Question: How many hospitals are located in each state?
 #MAKE A CHOROPLETH MAP !!
-- get the packages
-- create a state name look up table (a tibble??????????)
-- agg hospitals by states
-- mutate with facility state
-- count and left join
-- get the map data (states <- map_data("states"))
-- merge another left join with region and state name
-- merge hospital counts, and plot
-plot: x = long, y = lat, group = group, fill = n
 
 Load data and libraries to use and preprocessing
 
@@ -25,8 +16,6 @@ library(dplyr)
 library(maps)
 
 
-
-hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 us_states <- map_data("state")
 
 groupedStates <- hospitals |>
@@ -40,15 +29,31 @@ mergedData <- left_join(groupedStates, us_states, by = c("region"))
 # View(mergedData)
 
 ```
-change fonts
+
+Exploratory Data Analysis
+
 ```{r}
-library(extrafont)
-font_import()
-# loadfonts(device = "win")
-# fonts()
+# finding summary counts 
+summaryCounts <- groupedStates |>
+  filter(region != "NA") |>
+  summary(count)
+
+#find state with the lowest and highest number of hospitals
+orderedCounts <- arrange(groupedStates, desc(count))
+
+highestNum <- slice_head(orderedCounts, n = 5)
+
+lowestNum <- orderedCounts |>
+  filter(region != "NA") |>
+  slice_tail(n=5)
+
+
+
+print(summaryCounts)
+print(highestNum)
+print(lowestNum)
 
 ```
-
 
 
 create choropleth map
@@ -58,7 +63,6 @@ mergedData |>
   ggplot(aes(x = long, y = lat, group = group, fill = count)) +
   geom_polygon(color = "black") +
   coord_map("polyconic") +
-  # scale_fill_gradient(low = "midnightblue", high = "lightpink")
   scale_fill_viridis_c() +
   labs(
     x = "",
