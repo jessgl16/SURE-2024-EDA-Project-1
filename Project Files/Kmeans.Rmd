@@ -79,16 +79,16 @@ cost_data |>
 
 ```{r}
 # Select relevant columns and remove rows with missing values
-cost_data <- hospitals %>%
-  select(facility_name, procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) %>%
+cost_data <- hospitals |> 
+  select(facility_name, procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) |> 
   drop_na()
 
 # Filter out rows where any of the costs are zero and ratings are invalid
-cost_data <- cost_data %>%
+cost_data <- cost_data |> 
   filter(procedure_heart_failure_cost != 0, rating_overall > 0)
 
 # Convert categorical ratings to numerical values
-cost_data <- cost_data %>%
+cost_data <- cost_data |> 
   mutate(across(starts_with("rating_"), ~ case_when(
     . == "Above" ~ 1,
     . == "Same" ~ 2,
@@ -98,11 +98,11 @@ cost_data <- cost_data %>%
   )))
 
 # Remove rows with NA values in the rating columns after conversion
-cost_data <- cost_data %>% drop_na()
+cost_data <- cost_data |>  drop_na()
 
 # Standardize the data (only numeric columns)
-cost_data_scaled <- cost_data %>%
-  select(procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) %>%
+cost_data_scaled <- cost_data |> 
+  select(procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) |> 
   scale()
 
 # Apply K-Means Clustering
@@ -119,7 +119,7 @@ cost_data$Cluster <- as.factor(kmeans_result$cluster)
 
 ```{r}
 # Density ridges plot to visualize clusters
-cost_data %>%
+cost_data |> 
   ggplot(aes(x = procedure_heart_failure_cost, y = Cluster, fill = Cluster)) +
   geom_density_ridges(scale = 1) +
   labs(title = "K-Means Clustering on Heart Failure Cost",
