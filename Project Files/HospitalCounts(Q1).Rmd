@@ -15,6 +15,7 @@ library(tidyverse)
 library(dplyr)
 library(maps)
 
+hospitals <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/hospitals.csv")
 
 us_states <- map_data("state")
 
