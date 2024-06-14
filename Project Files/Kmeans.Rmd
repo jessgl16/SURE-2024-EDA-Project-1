@@ -55,7 +55,7 @@ cost_data$Cluster <- kmeans_result$cluster
 
 ```{r}
 # Updated Visualization with Custom Colors and Theme
-cost_data |> 
+kplot <- cost_data |> 
   ggplot(aes(x = procedure_heart_attack_cost, y = procedure_heart_failure_cost, color = as.factor(Cluster))) +
   geom_point(alpha = .5) +
   labs(title = "K-Means Clustering on Procedure Costs", 
@@ -72,7 +72,8 @@ cost_data |>
     axis.text = element_text(size = 13),
     axis.title = element_text(size = 16)
   )
-
+#ggsave("Kmeans.pdf", plot = kplot, device = "pdf", width = 10, height = 8, path = getwd())
+#uncomment if you want to save pdf
 
 ```
 

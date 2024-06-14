@@ -60,7 +60,7 @@ print(lowestNum)
 create choropleth map
 
 ```{r}
-mergedData |>
+usa_count <- mergedData |>
   ggplot(aes(x = long, y = lat, group = group, fill = count)) +
   geom_polygon(color = "black") +
   coord_map("polyconic") +
@@ -84,6 +84,9 @@ mergedData |>
     plot.legend = element_text(size = 12),
     legend.text = element_text(size = 12),
   )
+
+#ggsave("hospital_count.pdf", plot = usa_count, device = "pdf", width = 10, height = 8, path = getwd())
+#uncomment if you want to save pdf
 
 ```
 

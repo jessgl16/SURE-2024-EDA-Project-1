@@ -38,7 +38,7 @@ mortality_proportion <- mortality_proportion |>
   mutate(label = scales::percent(proportion, accuracy = 1))
 
 #Stacked bar graph
-mortality_proportion |> 
+stackedbar <- mortality_proportion |> 
   ggplot(aes(x = Facility.Type, y = proportion, fill = Rating.Mortality)) +
   geom_bar(stat = "identity", color = "black") +
   geom_text(aes(label = label), 
@@ -63,6 +63,9 @@ mortality_proportion |>
     axis.text = element_text(size = 16),
     axis.title = element_text(size = 16),
   )
+#ggsave("prop_mortality_hospitaltype.pdf", plot = stackedbar, device = "pdf", width = 10, height = 8, path = getwd())
+#uncomment if you want to save pdf
+
 ```
 
 

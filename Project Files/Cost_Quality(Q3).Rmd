@@ -36,7 +36,7 @@ hospitals <- hospitals |>
 
 graph
 ```{r}
-hospitals |> 
+heart_fail_qual <- hospitals |> 
   ggplot(aes(y = heart_failure_cost, x = fct_reorder(heart_failure_quality, heart_failure_cost, .fun = median), fill = heart_failure_quality)) +
   geom_violin(alpha = 0.7) + # Adjusting alpha for better contrast
   geom_boxplot(outlier.shape = NA, color = "black", width = .5) + # Narrowing boxplot width for better distinction
@@ -59,7 +59,8 @@ hospitals |>
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)
   )
-
+#ggsave("heart_failure_cost_plot.pdf", plot = heart_fail_qual, device = "pdf", width = 10, height = 8, path = getwd())
+#uncomment if you want to save pdf
   
 ```
 worse_quality <- hospitals |> filter(heart_failure_quality == "Worse") |> pull(heart_failure_cost)
