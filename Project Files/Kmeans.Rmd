@@ -57,87 +57,21 @@ cost_data$Cluster <- kmeans_result$cluster
 # Updated Visualization with Custom Colors and Theme
 cost_data |> 
   ggplot(aes(x = procedure_heart_attack_cost, y = procedure_heart_failure_cost, color = as.factor(Cluster))) +
-  geom_point() +
+  geom_point(alpha = .5) +
   labs(title = "K-Means Clustering on Procedure Costs", 
        subtitle = "Data from CORGIS Dataset Project",
        x = "Heart Attack Cost", 
        y = "Heart Failure Cost", 
        color = "Cluster") +
-  theme_minimal(base_size = 14) +
-  scale_color_manual(values = c("1" = "skyblue", "2" = "pink", "3" = "lightgreen")) +
+  theme_minimal(base_size = 18) +
+  scale_color_manual(values = c("1" = "purple3", "2" = "tomato1", "3" = "seagreen")) +
   theme(
     text = element_text(family = "serif"),
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(size = 10, hjust = 0.5),
-    plot.caption = element_text(size = 8, face = "italic"),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    axis.text = element_text(size = 13),
+    axis.title = element_text(size = 16)
   )
-
-
-```
-
-```{r}
-# Select relevant columns and remove rows with missing values
-cost_data <- hospitals |> 
-  select(facility_name, procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) |> 
-  drop_na()
-
-# Filter out rows where any of the costs are zero and ratings are invalid
-cost_data <- cost_data |> 
-  filter(procedure_heart_failure_cost != 0, rating_overall > 0)
-
-# Convert categorical ratings to numerical values
-cost_data <- cost_data |> 
-  mutate(across(starts_with("rating_"), ~ case_when(
-    . == "Above" ~ 1,
-    . == "Same" ~ 2,
-    . == "Below" ~ 3,
-    . == "Unknown" ~ NA_real_,
-    TRUE ~ as.numeric(.)
-  )))
-
-# Remove rows with NA values in the rating columns after conversion
-cost_data <- cost_data |>  drop_na()
-
-# Standardize the data (only numeric columns)
-cost_data_scaled <- cost_data |> 
-  select(procedure_heart_failure_cost, rating_overall, rating_mortality, rating_safety, rating_readmission, rating_experience) |> 
-  scale()
-
-# Apply K-Means Clustering
-set.seed(123)
-kmeans_result <- kmeans(cost_data_scaled, centers = 3)
-
-# Add cluster labels to the data
-cost_data$Cluster <- as.factor(kmeans_result$cluster)
-
-
-
-```
-
-
-```{r}
-# Density ridges plot to visualize clusters
-cost_data |> 
-  ggplot(aes(x = procedure_heart_failure_cost, y = Cluster, fill = Cluster)) +
-  geom_density_ridges(scale = 1) +
-  labs(title = "K-Means Clustering on Heart Failure Cost",
-       subtitle = "Data from CORGIS Dataset Project",
-       x = "Heart Failure Cost",
-       y = "Cluster") +
-  theme_minimal(base_size = 14) +
-  scale_fill_manual(values = c("1" = "skyblue", "2" = "pink", "3" = "lightgreen")) +
-  theme(
-    text = element_text(family = "serif"),
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(size = 10, hjust = 0.5),
-    plot.caption = element_text(size = 8, face = "italic"),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
-  ) 
-
-
 
 
 ```

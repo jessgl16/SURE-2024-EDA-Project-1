@@ -53,9 +53,9 @@ hospitals |>
   theme(
     text = element_text(family = "serif"),
     legend.position = "none",
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(size = 10, hjust = 0.5),
-    plot.caption = element_text(size = 8, face = "italic"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    plot.caption = element_text(size = 12, face = "italic"),
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)
   )
