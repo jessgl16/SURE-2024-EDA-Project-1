@@ -70,6 +70,11 @@ stackedbar <- mortality_proportion |>
 
 
 ```{r}
+stackedbar
+```
+
+
+```{r}
 mortality_summary <- hospitals_type |> 
   group_by(Facility.Type, Rating.Mortality) |> 
   summarize(count = n(), 

@@ -90,3 +90,8 @@ usa_data <- mergedData |>
 
 ```
 
+
+```{r}
+usa_data
+```
+

@@ -77,3 +77,7 @@ kplot <- cost_data |>
 
 ```
 
+```{r}
+kplot
+```
+
