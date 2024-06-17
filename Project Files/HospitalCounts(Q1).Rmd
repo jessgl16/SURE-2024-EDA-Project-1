@@ -69,7 +69,8 @@ usa_data <- mergedData |>
     x = "",
     y = "",
     title = "Hospital Counts by State",
-    subtitle = "Data from CORGIS Dataset Project"
+    subtitle = "Data from CORGIS Dataset Project",
+    caption = "*Hospitals that accept Medicare & Medicaid"
   ) +
   scale_y_continuous(labels = NULL) +
   scale_x_continuous(labels = NULL) +
@@ -79,7 +80,8 @@ usa_data <- mergedData |>
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     strip.background = element_blank(),
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 18),
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 15),
+    plot.caption = element_text(face = "italic", size = 10),
     plot.subtitle = element_text(hjust = 0.5, size = 11),
     plot.legend = element_text(size = 12),
     legend.text = element_text(size = 12),
